@@ -53,3 +53,21 @@ Each paper is contained in its own folder to keep the environment self-contained
 ├── 02_next_paper/
 ├── common/              # Shared utilities (logging, metrics)
 └── README.md
+
+```
+## 🛠️ Getting Started
+
+Follow these steps to set up the project locally.
+
+### 1. Clone the repository
+
+```bash
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+cd your-repo-name
+
+```
+## 2. Run a specific implementation
+Navigate to the specific folder to run
+```bash
+cd 01_lenet5_1998
+python train.py
