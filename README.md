@@ -1,6 +1,6 @@
 # From-Scratch ML Paper Reimplementations 2025–2026
 
-One seminal paper → full reimplementation 
+One seminal paper → full reimplementation every week
 
 ## Progress
 
