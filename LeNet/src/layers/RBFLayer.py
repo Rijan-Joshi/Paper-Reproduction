@@ -19,9 +19,19 @@ class RBF:
         X_norm = np.sum(X**2, axis = 1, keepdims = True) # N, 1
         W_norm = np.sum(self.W**2, axis = 1, keepdims = True) # 10, 1
 
-        out = X_norm + W_norm.T - 2 * X @ self.W.T
+        out = X_norm + W_norm.T - 2 * X @ self.W.T # N,C
 
         return out
 
     def backward(self, dout):
-        ...
+        """
+            dout: (N, C)
+            dX: (N, 84)
+        """
+        
+        dX_norm = 2 * self.X * np.sum(dout, axis = 1, keepdims = True)
+        dX_dot = -2 * (dout @ self.W)
+
+        dX = dX_norm + dX_dot
+
+        return dX
