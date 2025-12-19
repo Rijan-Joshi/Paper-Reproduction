@@ -1,4 +1,4 @@
-import numpy as np
+from src.utils.cupy_numpy import np
 
 class ScaledTanh:
 

@@ -1,5 +1,5 @@
 from src.utils.ScaledTanh import ScaledTanh
-import numpy as np
+from src.utils.cupy_numpy import np
 
 # connection = [
 #             [0, 1, 2],        # map 0

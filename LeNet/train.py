@@ -1,9 +1,11 @@
 import tqdm
-import numpy as np
+from src.utils.cupy_numpy import np
 import os
 from src.optimizer.SDLM import SDLM
 from model import LeNet5
 from src.utils.data_loader import load_data
+
+os.environ["USE_GPU"] = "1"
 
 def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
     """
@@ -99,7 +101,7 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
         history['val_loss'] = val_loss
         history['val_acc'] = val_acc
     
-        return model, history
+    return model, history
 
 def save_model(model: LeNet5, filepath = 'checkpoints/LeNet5_weights.npz'):
 
@@ -112,9 +114,9 @@ def save_model(model: LeNet5, filepath = 'checkpoints/LeNet5_weights.npz'):
     os.makedirs(os.path.dirname(filepath), exist_ok=True) if "/" in filepath else None
     np.savez(filepath, **params_to_save)
 
-    print ("-" * 100)
+    print ("-" * 20)
     print(f"Model saved to {filepath}")
-    print ("-" * 100)
+    print ("-" * 20)
 
 def load_model(model: LeNet5, filepath = 'checkpoints/LeNet5_weights.npz'):
     """

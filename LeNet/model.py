@@ -7,7 +7,7 @@ from src.layers.RBFLayer import RBF
 from src.losses.RBFLoss import RBFLoss
 from src.utils.bitmap_prototypes import get_all_digits_as_array
 from src.utils.ScaledTanh import ScaledTanh
-import numpy as np
+from src.utils.cupy_numpy import np
 
 def get_c3_connection_table():
     connection_table =  [
@@ -73,26 +73,26 @@ class LeNet5:
 
     def backward(self, dout):
         """ Backward pass through the network """
-        print("--"*10)
-        print(f"0 {dout.shape}")
+        # print("--"*10)
+        # print(f"0 {dout.shape}")
         dout = self.RBF.backward(dout)
-        print(f"1 {dout.shape}")
+        # print(f"1 {dout.shape}")
         dout = self.ScaledTanh.backward(dout)
-        print(f"2 {dout.shape}")
+        # print(f"2 {dout.shape}")
         dout = self.Linear.backward(dout)
-        print(f"3 {dout.shape}")
+        # print(f"3 {dout.shape}")
         dout = self.Flatten.backward(dout)
-        print(f"4 {dout.shape}")
+        # print(f"4 {dout.shape}")
         dout = self.C5.backward(dout)
-        print(f"5 {dout.shape}")
+        # print(f"5 {dout.shape}")
         dout = self.S4.backward(dout)
-        print(f"6 {dout.shape}")
+        # print(f"6 {dout.shape}")
         dout = self.C3.backward(dout)
-        print(f"7 {dout.shape}")
+        # print(f"7 {dout.shape}")
         dout = self.S2.backward(dout)
-        print(f"8 {dout.shape}")
+        # print(f"8 {dout.shape}")
         dout = self.C1.backward(dout)
-        print(f"9 {dout.shape}")
+        # print(f"9 {dout.shape}")
 
         return dout
 

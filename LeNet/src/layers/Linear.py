@@ -1,4 +1,4 @@
-import numpy as np
+from src.utils.cupy_numpy import np
 
 class Linear:
 
@@ -17,13 +17,10 @@ class Linear:
         # X: (batch, in_features)
         self._cache = X 
         out = X @ self.W + self.b
-        print("Shape out of Linear Layer", out.shape)
         return out # Shape: (batch, out_features)
         
     def backward(self, dout):
-        print("---" * 10)
         x = self._cache 
-        print(dout.shape, x.shape)
         batch = dout.shape[0] 
         self.dW = x.T @ dout #Shape : (in_features, out_features)
         self.db = np.sum(dout, axis = 0)  #Shape: (out_features, )

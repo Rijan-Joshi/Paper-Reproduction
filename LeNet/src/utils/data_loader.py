@@ -1,5 +1,5 @@
 # Here, we load MNIST dataset and preprocess it
-import numpy as np
+from src.utils.cupy_numpy import np
 from tensorflow.keras.datasets import mnist
 
 
@@ -25,8 +25,8 @@ def load_data():
     X_test = pad(X_test, 2, 2)
 
     # Add channel dimension
-    X_train = X_train[:, np.newaxis, :, :]
-    X_test = X_test[:, np.newaxis, :, :]
+    X_train = np.array(X_train[:, np.newaxis, :, :])
+    X_test = np.array(X_test[:, np.newaxis, :, :])
 
     return (X_train, X_test, y_train, y_test)
 

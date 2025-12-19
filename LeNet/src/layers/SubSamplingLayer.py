@@ -1,7 +1,7 @@
 #Subsampling Layer for the Model
 
 from src.utils.ScaledTanh import ScaledTanh
-import numpy as np
+from src.utils.cupy_numpy import np
 
 class SubSample:
     """

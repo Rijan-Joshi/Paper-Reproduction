@@ -1,4 +1,4 @@
-import numpy as np
+from src.utils.cupy_numpy import np
 from PIL import Image
 
 # LeNet-5 original 7x12 bitmaps for digits 0-9
