@@ -1,3 +1,2 @@
-1. Image Processing
-2. Creating the architecture, and implement the backpropagation
-3.
+# THIS IS FULL NUMPY BASED IMPLEMENTATION OF LENET-5. I WILL WRITE COMPLETE README SOON AND ALSO MAYBE A BLOG ABOUT THIS.
+Working on blog
