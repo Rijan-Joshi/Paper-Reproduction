@@ -49,7 +49,7 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
  
 
     #Training through epochs
-    n_samples = int(X_train.shape[0])  # Ensure Python int
+    n_samples = X_train.shape[0]
     n_batches = n_samples // batch_size
     history = {
         'train_loss' : [],
@@ -59,27 +59,17 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
         'learning_rate' : [],
     }
 
-    # Helper function to convert CuPy arrays to Python scalars
-    def to_scalar(x):
-        """Convert CuPy/NumPy array to Python scalar"""
-        if hasattr(x, 'item'):
-            return x.item()
-        elif hasattr(x, '__iter__') and not isinstance(x, (str, bytes)):
-            return float(x)
-        return float(x)
-    
     for epoch in range(epochs):
-        # Generate permutation - ensure it's on the same device as data
         indices = np.random.permutation(n_samples)
         
         epoch_loss = 0.0
         epoch_correct = 0
 
-        pbar = tqdm.tqdm(range(0, n_samples, batch_size), desc = f"Epoch {epoch + 1} / {epochs}", leave = False)
-        # batches = list(range(0, n_samples, batch_size))
+        # pbar = tqdm.tqdm(range(0, n_samples, batch_size), desc = f"Epoch {epoch + 1} / {epochs}", leave = False)
+        batches = list(range(0, n_samples, batch_size))
 
-        for start in pbar:
-        # for idx, start in enumerate(batches):
+        # for start in pbar:
+        for idx, start in enumerate(batches):
             end = min(start + batch_size, n_samples)
             batch_idx = indices[start: end]
             X_batch = X_train[batch_idx]
@@ -88,10 +78,9 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
             #Forward Pass
             Y_batch = model.forward(X_batch)
             
-            #Compute Loss - convert to Python scalar
+            #Compute Loss
             loss = model.compute_loss(Y_batch, y_batch)
-            loss_scalar = to_scalar(loss)
-            epoch_loss += loss_scalar
+            epoch_loss += loss
 
             #Backward Pass
             dout = model.MAP_Loss.backward()
@@ -101,15 +90,14 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
             named_params, grads = model.get_named_params_and_grads()
             optimizer.step(named_params, grads)
 
-            #Accuracy - convert to Python scalar
+            #Accuracy
             predictions = np.argmin(Y_batch, axis = 1)
-            correct = np.sum(predictions == y_batch)
-            epoch_correct += to_scalar(correct)
+            epoch_correct += np.sum(predictions == y_batch)
             
-            # Update progress bar with scalar value
-            pbar.set_postfix({"Loss" : f"{loss_scalar: .4f}"})
-            # if idx % 50 == 0:
-                # print(f"Batch {idx + 1} | Loss: {loss:.4f}")
+            # print(f"Batch {idx + 1} | Loss: {loss:.4f}")
+            # # pbar.set_postfix({"Loss" : f"{loss: .4f}"})
+            if idx % 50 == 0:
+                print(f"Batch {idx + 1} | Loss: {loss:.4f}")
         
         #Compute Epoch Metrics
         train_loss = epoch_loss / n_batches
@@ -119,17 +107,13 @@ def train(model, optimizer, X_train, y_train, X_val, y_val, epochs, batch_size):
         val_pred = model.forward(X_val)
         val_loss = model.compute_loss(val_pred, y_val)
         val_acc = model.get_accuracy(X_val, y_val)
-        
-        # Convert to Python scalars for printing
-        val_loss_scalar = to_scalar(val_loss)
-        val_acc_scalar = to_scalar(val_acc)
 
-        print(f"Epoch {epoch + 1:2d} | Training Loss: {train_loss:.4f} | Training_Acc: {train_acc:.4f} | Val_Acc: {val_acc_scalar:.4f} | Val_Loss: {val_loss_scalar:.4f}")
+        print(f"Epoch {epoch + 1:2d} | Training Loss: {train_loss:.4f} | Training_Acc: {train_acc:.4f} | Val_Acc: {val_acc:.4f} | Val_Loss: {val_loss:.4f}")
 
         history['train_acc'] = train_acc
         history['train_loss'] = train_loss
-        history['val_loss'] = val_loss_scalar
-        history['val_acc'] = val_acc_scalar
+        history['val_loss'] = val_loss
+        history['val_acc'] = val_acc
     
     return model, history
 
@@ -196,6 +180,11 @@ if __name__ == "__main__":
     print("Loading MNIST dataset....")
     X_train, X_test, y_train, y_test = load_data() #This will give images of shapes (batch, channel, height, width) = (batch, 1, 32, 32)
 
+    X_train = np.asarray(X_train)
+    X_test  = np.asarray(X_test)
+    y_train = np.asarray(y_train)
+    y_test  = np.asarray(y_test)
+
     #Splitting the training data to training and validation set
     X_val = X_train[:5000]
     y_val = y_train[:5000]
@@ -209,20 +198,9 @@ if __name__ == "__main__":
     #Save the model
     save_model(model)
     
-    # Helper function to convert CuPy arrays to Python scalars
-    def to_scalar(x):
-        """Convert CuPy/NumPy array to Python scalar"""
-        if hasattr(x, 'item'):
-            return x.item()
-        elif hasattr(x, '__iter__') and not isinstance(x, (str, bytes)):
-            return float(x)
-        return float(x)
-    
     test_pred = model.forward(X_test)
     test_loss = model.compute_loss(test_pred, y_test)
     test_acc = model.get_accuracy(X_test, y_test)
-    test_acc_scalar = to_scalar(test_acc)
-    test_loss_scalar = to_scalar(test_loss)
-    print(f"Test Accuracy: {test_acc_scalar * 100:.2f}%")
-    print(f"Test Prediction: {test_loss_scalar:.4f}")
+    print(f"Test Accuracy: {test_acc * 100:.2f}%")
+    print(f"Test Prediction: {test_loss:.4f}")
 

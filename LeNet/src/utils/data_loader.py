@@ -1,5 +1,5 @@
 # Here, we load MNIST dataset and preprocess it
-from src.utils.cupy_numpy import np
+import numpy as np
 from tensorflow.keras.datasets import mnist
 
 
@@ -11,10 +11,10 @@ def load_data():
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-    X_train = np.asarray(X_train.astype("float32"))
-    y_train = np.asarray(y_train.astype("int32"))
-    X_test = np.asarray(X_test.astype("float32"))
-    y_test = np.asarray(y_test.astype("int32"))
+    X_train = X_train.astype("float32")
+    y_train = y_train.astype("int32")
+    X_test = X_test.astype("float32")
+    y_test = y_test.astype("int32")
 
     # Normalization on the  basis of LeNet-5
     X_train = -0.005 * X_train + 1.175
